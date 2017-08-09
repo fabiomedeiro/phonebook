@@ -85,16 +85,13 @@ function update_table_office($mac, $id, $password, $users, $location,  $status)
 }
 function read_folder()
 {
-	$files = scandir("/srv/tftpboot");
+	$files = scandir("/home/tftpboot");
 	return $files;
 }
 function read_file($files)
 {
-	$xml=simplexml_load_file("/srv/tftpboot/$files") or die("Error: Cannot create object");
+	$xml=simplexml_load_file("/home/tftpboot/$files") or die("Error: Cannot create object");
 	return $xml;
-	echo $xml->User_ID_1_;
-	echo $xml->Password_1_;
-	echo $xml->Display_Name_1_;
 }
 function auto_update_office()
 {
@@ -109,5 +106,6 @@ function auto_update_office()
 
 
 }
+auto_update_office();
 ?>
 

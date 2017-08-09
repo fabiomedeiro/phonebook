@@ -20,5 +20,3 @@ create table office(
        PRIMARY KEY (mac)
        FOREIGN KEY (id) references blueface(id)
 );
-       
-       
