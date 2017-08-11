@@ -57,15 +57,15 @@ class PoxnoraAPI {
         $data = "lt=$key&_eventId=submit&username=$username&password=$password";
         $this->setCurlPost($ch, $data);
         $result = curl_exec($ch);
+        echo $result;
 	curl_close($ch);
 	// https://portal.blueface.com/ie/callmanagement.aspx
 	//$this->download_page($result);
 	// check if there's a form key. If there's a form key then we're on
         // the login page again
-        //$key = $this->matchFormKey($result);
+        $key = $this->matchFormKey($result);
 
-        //return !$key;
-	return $this->cookieFile;
+        return !$key;
     }
 
     // Add post data to curl
@@ -88,17 +88,16 @@ class PoxnoraAPI {
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_REFERER,        self::URL);
     }
+    protected function download_page($result){
+	$destination = "/home/blueface/blueface.html";
+    	$fp = fopen($destination, 'w');
+    	fwrite($fp, $result);
+    	fclose($fp);
+	}
 
 }
 
 $api = new PoxnoraAPI();
-$cookie=$api->login('journal', '8DFG10AGnr4L');
-//$ch = curl_init("https://portal.blueface.com/ie/pbxgui/provisioning.aspx?method=getsip&customerid=28beb3b7-cee0-4f5e-b88f-17950d9b6fd9");
-//$ch = curl_init("https://portal.blueface.com/ie/pbxgui/pbxguixml.aspx?method=getvoicemail&simulate=false");
-$ch = curl_init("https://portal.blueface.com/ie/pbxgui/pbxguixml.aspx?method=getnumbers&simulate=false");
-curl_setopt($ch, CURLOPT_COOKIEJAR,      $cookie);
-curl_setopt($ch, CURLOPT_COOKIEFILE,     $cookie);
-$voicemail = curl_exec($ch);
-$xml=simplexml_load_file($voicemail);
-echo $xml->sipaccount;
+$api->login('journal', '8DFG10AGnr4L');
+
 ?>
