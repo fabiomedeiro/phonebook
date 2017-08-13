@@ -1,4 +1,5 @@
 <?php
+include 'classes.php';
 
 function connect_db()
 {
@@ -14,6 +15,7 @@ function connect_db()
     		echo "Connection failed: " . $e->getMessage();
     	}
 }
+
 function consult_db($table, $pk)
 {
 	$conn = connect_db();
@@ -21,14 +23,18 @@ function consult_db($table, $pk)
 	{
 		$stmt = $conn->prepare("SELECT * FROM $table");		
 	}else{  
-		if ($table == "office")
+		if ($table == "phones")
 			{
 				$stmt = $conn->prepare("SELECT * FROM $table WHERE mac='$pk'");
 			}
-		if ($table == "blueface")
+		if ($table == "voicemail")
                         {
-                                $stmt = $conn->prepare("SELECT * FROM $table WHERE mac='$pk'");
+                                $stmt = $conn->prepare("SELECT * FROM $table WHERE mailbox='$pk'");
                         }       
+		if ($table == "numbers")
+			{
+				$stmt = $conn->prepare("SELECT * FROM $table WHERE numbers='$pk'");
+			}
 
 	}
 	$stmt->execute();
@@ -41,48 +47,110 @@ function consult_db($table, $pk)
 		return "0";
 	}
 }
-function insert_table_office($mac, $id, $password, $users, $location,  $status)
+
+function insert_phones($mac, $numbers, $users, $location,  $status)
 {
 	$conn = connect_db();
-        $stmt = $conn->prepare("INSERT INTO office (mac, id, password, users, location, status) VALUES ('$mac', '$id', '$password', '$users', '$location',  '$status')");
+        $stmt = $conn->prepare("INSERT INTO phones (mac, numbers, users, location, status) VALUES ('$mac', '$numbers', '$users', '$location',  '$status')");
 	$stmt->execute();
 }
-function update_table_office($mac, $id, $password, $users, $location,  $status)
+
+function insert_numbers($numbers, $account, $password, $mailbox)
 {
-	$table = "office";
 	$conn = connect_db();
-	$consult = consult_db($table, $mac);
+	$stmt = $conn->prepare("INSERT INTO numbers (numbers, account, password, mailbox) VALUES ('$numbers', '$account', '$password', '$mailbox')");
+	$stmt->execute();
+}
+
+function insert_voicemail($mailbox, $pin, $name, $mail)
+{
+	        $conn = connect_db();
+		        $stmt = $conn->prepare("INSERT INTO voicemail (mailbox, pin, name, mail) VALUES ('$mailbox', '$pin', '$name', '$mail')");
+		        $stmt->execute();
+}
+
+function update_phones($mac, $numbers, $users, $location,  $status)
+{
+	$conn = connect_db();
+	$consult = consult_db("phones", $mac);
 	if ($consult[0]["mac"] == $mac)
 	{
-			if ($consult[0]["id"] != $id)
+			if ($consult[0]["numbers"] != $numbers)
 			{
-				$stmt = $conn->prepare("UPDATE  $table SET id='$id' WHERE mac='$mac'");
+				$stmt = $conn->prepare("UPDATE phones SET numbers='$numbers' WHERE mac='$mac'");
         			$stmt->execute();
 			}
 			if ($consult[0]["users"] != $users)
                         {
-                                $stmt = $conn->prepare("UPDATE $table SET users='$users' WHERE mac='$mac'");
+                                $stmt = $conn->prepare("UPDATE phones SET users='$users' WHERE mac='$mac'");
                                 $stmt->execute();
                         }
 			if ($consult[0]["location"] != "0")
                         {
-                                $stmt = $conn->prepare("UPDATE $table SET location='$location' WHERE mac='$mac'");
+                                $stmt = $conn->prepare("UPDATE phones SET location='$location' WHERE mac='$mac'");
                                 $stmt->execute();
                         }
 			if ($consult[0]["status"] != "0")
                         {
-                                $stmt = $conn->prepare("UPDATE  $table SET status='$status' WHERE mac='$mac'");
-                                $stmt->execute();
-                        }
-			if ($consult[0]["password"] != $password)
-                        {
-                                $stmt = $conn->prepare("UPDATE $table SET password='$password' WHERE mac='$mac'");
+                                $stmt = $conn->prepare("UPDATE  phones SET status='$status' WHERE mac='$mac'");
                                 $stmt->execute();
                         }
 	}else{
-		insert_table_office( $mac, $id, $password, $users, $location,  $status);
+		insert_phones($mac, $numbers, $users, $location,  $status);
 	}
 }
+
+function update_voicemail($mailbox, $pin, $name, $mail)
+{
+	        $conn = connect_db();
+		$consult = consult_db("voicemail", $mailbox);
+		if ($consult[0]["mailbox"] == $mailbox)
+		{
+			if ($consult[0]["pin"] != $pin)
+			{
+				$stmt = $conn->prepare("UPDATE voicemail SET pin='$pin' WHERE mailbox='$mailbox'");
+				$stmt->execute();
+			}
+			if ($consult[0]["name"] != $name)
+			{ 
+				$stmt = $conn->prepare("UPDATE voicemail SET name='$name' WHERE mailbox='$mailbox'");
+				$stmt->execute();                                                                                                                      }
+			if ($consult[0]["mail"] != $mail)
+			{       
+				$stmt = $conn->prepare("UPDATE voicemail SET mail='$mail' WHERE mailbox='$mailbox'");                                                           $stmt->execute();
+			}
+		}else{
+			insert_voicemail($mailbox, $pin, $name, $mail);
+		}
+}
+
+function update_numbers($numbers, $account, $password, $mailbox)
+{
+	$conn = connect_db();
+	$consult = consult_db("numbers", $numbers);
+	if ($consult[0]["numbers"] == $numbers)
+	{
+		if ($consult[0]["account"] != $account)
+		{
+			$stmt = $conn->prepare("UPDATE numbers SET account='$account' WHERE numbers='$numbers'");
+			$stmt->execute();
+		}
+		if ($consult[0]["password"] != $password)
+		{
+		        $stmt = $conn->prepare("UPDATE numbers SET password='$password' WHERE numbers='$numbers'");
+		        $stmt->execute();
+		}
+		if ($consult[0]["mailbox"] != $mailbox)
+		{
+		        $stmt = $conn->prepare("UPDATE numbers SET mailbox='$mailbox' WHERE numbers='$numbers'");
+		        $stmt->execute();
+		}
+	}else{
+		insert_numbers($numbers, $account, $password, $mailbox);
+	}
+}
+
+/*
 function read_folder()
 {
 	$files = scandir("/home/tftpboot");
@@ -107,5 +175,6 @@ function auto_update_office()
 
 }
 auto_update_office();
+ */
 ?>
 
