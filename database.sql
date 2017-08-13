@@ -15,7 +15,6 @@ create table numbers(
 	password varchar(32) NOT NULL,
 	mailbox varchar(20),
 	PRIMARY KEY (numbers),
-	FOREIGN KEY (mailbox) references voicemail(mailbox)
 );
 create table phones(
 	       mac varchar(32) NOT NULL,
