@@ -2,29 +2,29 @@ create database journal2;
 create user 'journal'@'localhost' IDENTIFIED BY 'journal123';
 Grant ALL privileges on  journal2.* TO 'journal'@'localhost';
 use journal2;
-create table voicemail(
-	mailbox varchar(32) NOT NULL,
-       	pin  varchar(32) NOT NULL,
+create table admins(
 	name varchar(32) NOT NULL,
-	mail varchar(20) NOT NULL,
-	PRIMARY KEY (mailbox)
+        password varchar(32) NOT NULL,
+        PRIMARY KEY (name) 
 );
-create table numbers(
-	numbers varchar(32) NOT NULL, 
+create table blueface_data(
+	pnumber varchar(32) NOT NULL, 
 	account  varchar(32) NOT NULL,
 	password varchar(32) NOT NULL,
 	mailbox varchar(20),
-	PRIMARY KEY (numbers),
-	FOREIGN KEY (mailbox) references voicemail(mailbox)
+	pin  varchar(32),
+        name varchar(32),
+        mail varchar(20),
+	PRIMARY KEY (pnumber)
 );
-create table phones(
+create table office_phones(
 	       mac varchar(32) NOT NULL,
-	       numbers  varchar(32) NOT NULL,
+	       pnumber  varchar(32) NOT NULL,
 	       users varchar(20) NOT NULL,
 	       location varchar(20) NOT NULL,
 	       status  varchar(20) NOT NULL,
 	       PRIMARY KEY (mac),
-	       FOREIGN KEY (numbers) references numbers(numbers)
+	       FOREIGN KEY (pnumber) references blueface_data (pnumber)
 );
 
 

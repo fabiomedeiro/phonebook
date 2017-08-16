@@ -1,6 +1,3 @@
 <?php
-	require('main.html');
-
+	require ("main.php");
 ?>
-
-
