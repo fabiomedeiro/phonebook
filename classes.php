@@ -35,16 +35,14 @@ class PoxnoraAPI {
 
         return $key;
     }
-
     protected function matchFormKey($result) {
         preg_match_all('<input type="hidden" name="lt" value="(.*)">', $result, $matches);
 
         return isset($matches[1][0]) ? $matches[1][0] : false;
     }
-
     // Uses username, password, and form key to login
     public function login($username, $password) {
-        $key = $this->getFormKey();
+	$key = $this->getFormKey();
 
         $ch = curl_init();
         $this->setCurlOpts($ch);
@@ -53,11 +51,6 @@ class PoxnoraAPI {
         $this->setCurlPost($ch, $data);
         $result = curl_exec($ch);
 	curl_close($ch);
-	// check if there's a form key. If there's a form key then we're on
-        // the login page again
-        //$key = $this->matchFormKey($result);
-
-        //return !$key;
 	return $this->cookieFile;
     }
 

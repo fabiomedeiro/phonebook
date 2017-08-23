@@ -1,48 +1,28 @@
 <?php
-include 'functions.php';
-$api = new PoxnoraAPI();
+require ("main.php");	
+if(check_session() == 0){
 
-$cookie=$api->login('journal', '8DFG10AGnr4L');
-$url[0] = "https://portal.blueface.com/ie/pbxgui/provisioning.aspx?method=getsip&customerid=28beb3b7-cee0-4f5e-b88f-17950d9b6fd9";
-$url[1] = "https://portal.blueface.com/ie/pbxgui/pbxguixml.aspx?method=getvoicemail&simulate=false";
-$url[2] = "https://portal.blueface.com/ie/pbxgui/pbxguixml.aspx?method=getnumbers&simulate=false";
-for ($a = 0; $a < 3; $a++)
-{
-	$ch = curl_init($url[$a]);
-	curl_setopt($ch, CURLOPT_COOKIEJAR,      $cookie);
-	curl_setopt($ch, CURLOPT_COOKIEFILE,     $cookie);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-	$result = curl_exec ($ch);
-	$pwd = "blueface/file" .$a . ".xml";
-	$file = fopen($pwd,"w");
-	fwrite($file,$result);
-	fclose($file);
-	curl_close($ch);
-	$xml[$a]=simplexml_load_file($pwd) or die("Error: Cannot create object");
+}else{
+        exit("You must be logged in to view this page");
 }
 
-for ($a = 0; $a < count($xml[1]->voicemailaccounts->voicemailaccount); $a++)
-{
-	$name = $xml[1]->voicemailaccounts->voicemailaccount[$a]->name;
-	$mailbox = $xml[1]->voicemailaccounts->voicemailaccount[$a]->mailbox;
-	$pin = $xml[1]->voicemailaccounts->voicemailaccount[$a]->pin;
-	$mail = $xml[1]->voicemailaccounts->voicemailaccount[$a]->emailaddress;
-	update_voicemail($mailbox, $pin, $name, $mail);
-
-}
-for ($a = 0; $a < count($xml[2]->numbers->number); $a++)
-{
-	$numbers = substr($xml[2]->numbers->number[$a]['id'],3);
-	$account = substr($xml[2]->numbers->number[$a]->route->normal->first,4);
-	$mailbox = $xml[2]->numbers->number[$a]->route->voicemail->mailbox;
-	for ($b= 0; $b < count($xml[0]->sipaccounts->sipaccount); $b++)
-	{
-	      if($xml[0]->sipaccounts->sipaccount[$b]->accountname == substr($xml[2]->numbers->number[$a]->route->normal->first,4))
-               {
-			$password = $xml[0]->sipaccounts->sipaccount[$b]->secret;
-		}
-	 }
-	update_numbers($numbers, $account, $password, $mailbox);
-
-}
+$result = consult_db("blueface_data", "*");
 ?>
+	<div class="container" align="center">
+	<table id="table" class="table table-striped" class='tablesorter'>
+            <thead>
+              <tr> <th>Phone number</th><th>Account</th><th>Password</th><th>Mailbox</th><th>Pin</th><th>Email</th></tr>
+            </thead>
+
+             <?php
+		for($a=0; $a < count($result); $a++)
+		{
+			echo "</tr><td>". $result[$a]['pnumber'] ."</td>";
+			echo "<td>". $result[$a]['account'] ."</td>";
+			echo "<td>". $result[$a]['password'] ."</td>";
+			echo "<td>". $result[$a]['mailbox'] ."</td>";
+			echo "<td>". $result[$a]['pin'] ."</td>";
+			echo "<td>". $result[$a]['mail'] ."</td></tr>";
+		}
+            ?>
+	  </table></div>
