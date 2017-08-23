@@ -1,6 +1,5 @@
 <?php
 include 'functions.php';
-session_start();
 $db = connect_db();
 
 
@@ -14,6 +13,7 @@ $dbpass = $result[0]["password"];
 
 
 if($dbpass != NULL && $dbpass == $pass){
+	session_start();
 	$_SESSION['user'] = $user;
 	echo $_SESSION['user'];
 	header('Location: edit.php');

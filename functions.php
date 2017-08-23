@@ -48,10 +48,10 @@ function consult_db($table, $pk)
 	}
 }
 
-function insert_office_phones($mac, $numbers, $users, $location,  $status)
+function insert_office_phones($mac, $numbers, $users, $location,  $img)
 {
 	$conn = connect_db();
-        $stmt = $conn->prepare("INSERT INTO office_phones (mac, pnumber, users, location, status) VALUES ('$mac', '$numbers', '$users', '$location',  '$status')");
+        $stmt = $conn->prepare("INSERT INTO office_phones (mac, pnumber, users, location, img) VALUES ('$mac', '$numbers', '$users', '$location',  '$img')");
 	$stmt->execute();
 }
 
@@ -63,7 +63,7 @@ function insert_blueface_data($numbers, $account, $password, $mailbox, $pin, $na
 }
 
 
-function update_office_phones($mac, $numbers, $users, $location,  $status)
+function update_office_phones($mac, $numbers, $users, $location,  $img)
 {
 	$conn = connect_db();
 	$consult = consult_db("office_phones", $mac);
@@ -79,14 +79,14 @@ function update_office_phones($mac, $numbers, $users, $location,  $status)
                                 $stmt = $conn->prepare("UPDATE office_phones SET users='$users' WHERE mac='$mac'");
                                 $stmt->execute();
                         }
-			if ($consult[0]["location"] != "0")
+			if ($consult[0]["location"] != $location)
                         {
-                                $stmt = $conn->prepare("UPDATE ofice_phones SET location='$location' WHERE mac='$mac'");
+                                $stmt = $conn->prepare("UPDATE office_phones SET location='$location' WHERE mac='$mac'");
                                 $stmt->execute();
                         }
-			if ($consult[0]["status"] != "0")
+			if ($consult[0]["img"] != $img)
                         {
-                                $stmt = $conn->prepare("UPDATE  office_phones SET status='$status' WHERE mac='$mac'");
+                                $stmt = $conn->prepare("UPDATE  office_phones SET img='$img' WHERE mac='$mac'");
                                 $stmt->execute();
                         }
 	}else{

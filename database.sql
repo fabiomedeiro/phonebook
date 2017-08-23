@@ -22,7 +22,7 @@ create table office_phones(
 	       pnumber  varchar(32) NOT NULL,
 	       users varchar(20) NOT NULL,
 	       location varchar(20) NOT NULL,
-	       status  varchar(20) NOT NULL,
+	       img  varchar(10) NOT NULL,
 	       PRIMARY KEY (mac),
 	       FOREIGN KEY (pnumber) references blueface_data (pnumber)
 );

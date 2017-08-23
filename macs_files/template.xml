@@ -247,8 +247,8 @@
 <Debug_Server group="System/Optional_Network_Configuration">syslog</Debug_Server>
 <Debug_Level group="System/Optional_Network_Configuration">2</Debug_Level>
 <NTP_Enable ua="na">Yes</NTP_Enable>
-<Primary_NTP_Server ua="na">3.ie.pool.ntp.org</Primary_NTP_Server>
-<Secondary_NTP_Server ua="na">0.europe.pool.ntp.org</Secondary_NTP_Server>
+<Primary_NTP_Server ua="na">2.ie.pool.ntp.org</Primary_NTP_Server>
+<Secondary_NTP_Server ua="na">1.europe.pool.ntp.org</Secondary_NTP_Server>
 <Enable_VLAN group="System/VLAN_Settings">No</Enable_VLAN>
 <VLAN_ID group="System/VLAN_Settings">1</VLAN_ID>
 <Enable_CDP group="System/VLAN_Settings">Yes</Enable_CDP>
@@ -355,7 +355,7 @@
 <Resync_Trigger_1 group="Provisioning/Configuration_Profile"/>
 <Resync_Trigger_2 group="Provisioning/Configuration_Profile"/>
 <Resync_Fails_On_FNF group="Provisioning/Configuration_Profile">Yes</Resync_Fails_On_FNF>
-<Profile_Rule group="Provisioning/Configuration_Profile">tftp://192.168.70.10/$MA.cfg</Profile_Rule>
+<Profile_Rule group="Provisioning/Configuration_Profile">tftp://192.168.30.133/$MA.cfg</Profile_Rule>
 <Profile_Rule_B group="Provisioning/Configuration_Profile"/>
 <Profile_Rule_C group="Provisioning/Configuration_Profile"/>
 <Profile_Rule_D group="Provisioning/Configuration_Profile"/>

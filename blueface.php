@@ -8,6 +8,7 @@ if(check_session() == 0){
 
 $result = consult_db("blueface_data", "*");
 ?>
+	<div class="container" align="center">
 	<table id="table" class="table table-striped" class='tablesorter'>
             <thead>
               <tr> <th>Phone number</th><th>Account</th><th>Password</th><th>Mailbox</th><th>Pin</th><th>Email</th></tr>
@@ -24,4 +25,4 @@ $result = consult_db("blueface_data", "*");
 			echo "<td>". $result[$a]['mail'] ."</td></tr>";
 		}
             ?>
-	  </table>
+	  </table></div>

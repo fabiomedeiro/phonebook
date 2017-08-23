@@ -12,14 +12,8 @@ $error = false;
 $result = consult_db("blueface_data",$pnumber);
 $user = $result[0]['account'];
 $pass = $result[0]['password'];
-$status = "Active";
 
-echo  $display;
-echo $img;
-echo $mac;
-echo $location;
-echo $pnumber;
-/*if($display == "" || $mac == "" || $user == "" || $pass == ""){
+if($display == "" || $mac == "" || $user == "" || $pass == ""){
 	echo "Please go back and ensure all fields are completed";
 	$error = true;
 }
@@ -39,25 +33,38 @@ if(!$error){
 	$mac = normaliseMac($mac);
 	$fileName = genFileName($mac);
 
+}
+if (file_exists($fileName))
+{
+	$xml = simplexml_load_file($fileName);
+	$xml->Short_Name_1_ = "$display";
+	$xml->User_ID_1_ = $user;
+	$xml->Password_1_ = $pass;
+	$xml->Display_Name_1_ = "$display";
+	$xml->BMP_Picture_Download_URL = "tftp://192.168.30.133/logos/". $img .".bmp";
+	copyConfig("$fileName");
+	update_office_phones($mac, $pnumber, $display, $location,  $img);
+        echo " <p class='lead' align='center'>Config update succesfully and opied to TFTP Server</p>";
+        echo '<form  align="center"method="post" action="edit.php">
+        <button type="submit" class="btn">OK</button></form>';
 
+}else{
+	//Do a DB lookup to make sure the IP isnt in use?
+	//Or a grep of the dir on shout to make sure the IP isnt in use
 
-//Do a DB lookup to make sure the IP isnt in use?
-//Or a grep of the dir on shout to make sure the IP isnt in use
-
-$template = file_get_contents("macs_files/template.xml");
-$template = str_replace("##DISP##", $display, $template);
-$template = str_replace("##IMG##", $img, $template);
-$template = str_replace("##USER##", $user, $template);
-$template = str_replace("##PASS##", $pass, $template);
-$template = str_replace("##MAC##", strtoupper($mac), $template);
-
-file_put_contents($fileName, $template);
-chmod($fileName, 0775);
-echo copyConfig("$fileName");
-update_office_phones($mac, $pnumber, $display, $location,  $status);
-echo " <p class='lead'>Config succesfully copied to TFTP Server</p>";
-echo '<form class="navbar-form pull-left" name="OK" method="post" action="edit.php">
-      <button type="submit" id="ok_btn" class="btn pull-right">OK</button></form>';
+	$template = file_get_contents("macs_files/template.xml");
+	$template = str_replace("##DISP##", $display, $template);
+	$template = str_replace("##IMG##", $img, $template);
+	$template = str_replace("##USER##", $user, $template);
+	$template = str_replace("##PASS##", $pass, $template);
+	$template = str_replace("##MAC##", strtoupper($mac), $template);
+	file_put_contents($fileName, $template);
+	chmod($fileName, 0775);
+	echo copyConfig("$fileName");
+	update_office_phones($mac, $pnumber, $display, $location,  $img);
+	echo " <p class='lead' align='center'>Config succesfully copied to TFTP Server</p>";
+	echo '<form class="navbar-form pull-left" name="OK" method="post" action="edit.php">
+      	<button aling="center" type="submit" id="ok_btn" class="btn pull-center">OK</button></form>';
 }
 function genFileName($mac){
 	return "macs_files/" . $mac . ".cfg";
@@ -90,5 +97,5 @@ function copyConfig($f){
 	$status = exec("cp $f /home/tftpboot");
 	return $status;
 }
-*/
+
 ?>
